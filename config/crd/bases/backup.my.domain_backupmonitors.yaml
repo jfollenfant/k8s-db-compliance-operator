@@ -1,0 +1,93 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+  name: backupmonitors.backup.my.domain
+spec:
+  group: backup.my.domain
+  names:
+    kind: BackupMonitor
+    listKind: BackupMonitorList
+    plural: backupmonitors
+    singular: backupmonitor
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: BackupMonitor is the Schema for the backupmonitors API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BackupMonitorSpec defines the desired state of BackupMonitor
+            properties:
+              apiEndpoint:
+                description: APIEndpoint is the URL of the external API to send notifications
+                  to
+                type: string
+              enabledNamespaces:
+                description: EnabledNamespaces limits processing to specific namespaces
+                  (empty means all namespaces)
+                items:
+                  type: string
+                type: array
+              resyncPeriodMinutes:
+                default: 5
+                description: 'ResyncPeriodMinutes defines how often to check for new
+                  deployments (default: 5)'
+                type: integer
+            type: object
+          status:
+            description: BackupMonitorStatus defines the observed state of BackupMonitor
+            properties:
+              lastResyncTime:
+                description: LastResyncTime is the last time the controller checked
+                  for deployments
+                format: date-time
+                type: string
+              processedDeployments:
+                description: ProcessedDeployments is a list of deployments that have
+                  been processed
+                items:
+                  description: ProcessedDeployment tracks a deployment that has been
+                    processed
+                  properties:
+                    name:
+                      description: Name of the deployment
+                      type: string
+                    namespace:
+                      description: Namespace of the deployment
+                      type: string
+                    timestamp:
+                      description: Timestamp when the deployment was processed
+                      type: string
+                  required:
+                  - name
+                  - namespace
+                  - timestamp
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

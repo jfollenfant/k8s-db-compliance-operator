@@ -1,0 +1,23 @@
+# permissions for end users to view backupmonitors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: k8s-db-compliance-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: backupmonitor-viewer-role
+rules:
+- apiGroups:
+  - backup.my.domain
+  resources:
+  - backupmonitors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - backup.my.domain
+  resources:
+  - backupmonitors/status
+  verbs:
+  - get
